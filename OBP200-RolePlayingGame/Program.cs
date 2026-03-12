@@ -5,10 +5,19 @@ namespace OBP200_RolePlayingGame;
 
 class Program
 {
+   // static Player player;
+    
+    
+    
+    
+    
+    
+    
     // ======= Globalt tillstånd  =======
 
     // Spelarens "databas": alla värden som strängar
     // index: 0 Name, 1 Class, 2 HP, 3 MaxHP, 4 ATK, 5 DEF, 6 GOLD, 7 XP, 8 LEVEL, 9 POTIONS, 10 INVENTORY (semicolon-sep)
+    
     static string[] Player = new string[11];
 
     // Rum: [type, label]
@@ -67,6 +76,8 @@ class Program
 
     static void StartNewGame()
     {
+       // player = new Player();
+        
         Console.Write("Ange namn: ");
         var name = (Console.ReadLine() ?? "").Trim();
         if (string.IsNullOrWhiteSpace(name)) name = "Namnlös";
@@ -98,7 +109,7 @@ class Program
                 maxhp = 40; hp = 40; atk = 7; def = 5; potions = 2; gold = 15;
                 break;
         }
-
+        
         // Fyll player-array
         Player[0] = name;
         Player[1] = cls;
@@ -111,6 +122,20 @@ class Program
         Player[8] = "1";   // LEVEL
         Player[9] = potions.ToString();
         Player[10] = "Wooden Sword;Cloth Armor"; // inventory som semicolon-separerad sträng
+        
+
+       // //Refaktoriserad kod från player-klass
+       //  player.Name = name;
+       //  player.PlayerClass = cls;
+       //  player.HP = hp;
+       //  player.MaxHP = maxhp;
+       //  player.Attack = atk;
+       //  player.Defence = def;
+       //  player.Gold = gold;
+       //  player.XP = 0; 
+       //  player.Level = 1;
+       //  player.Potions = potions;
+       //  player.Inventory = new List<string> {"Wodden Sword", "Cloth Armor"};
 
         // Initiera karta (linjärt äventyr)
         Rooms.Clear();
