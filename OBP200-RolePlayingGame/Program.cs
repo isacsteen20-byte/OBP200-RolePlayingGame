@@ -2,11 +2,8 @@
 
 namespace OBP200_RolePlayingGame;
 
-
 class Program
 {
-    
-    
     // ======= Globalt tillstånd  =======
     static Player player;
 
@@ -67,8 +64,6 @@ class Program
 
     static void StartNewGame()
     {
-        player = new Player();
-        
         Console.Write("Ange namn: ");
         var name = (Console.ReadLine() ?? "").Trim();
         if (string.IsNullOrWhiteSpace(name)) name = "Namnlös";
@@ -80,6 +75,7 @@ class Program
         string cls = "Warrior";
         int hp = 0, maxhp = 0, atk = 0, def = 0;
         int potions = 0, gold = 0;
+        int xp = 0, level = 1;
         
         switch (k)
         {
@@ -100,21 +96,8 @@ class Program
                 maxhp = 40; hp = 40; atk = 7; def = 5; potions = 2; gold = 15;
                 break;
         }
-        
-        
 
-       //Refaktoriserad kod från player-klass
-        player.Name = name;
-        player.PlayerClass = cls;
-        player.HP = hp;
-        player.MaxHP = maxhp;
-        player.Attack = atk;
-        player.Defence = def;
-        player.Gold = gold;
-        player.XP = 0; 
-        player.Level = 1;
-        player.Potions = potions;
-        player.Inventory = new List<string> {"Wodden Sword", "Cloth Armor"};
+        player = new Player(name, cls, hp, maxhp, atk, def, gold, xp, level, potions);
 
         // Initiera karta (linjärt äventyr)
         Rooms.Clear();
@@ -266,10 +249,10 @@ class Program
         // Vinstrapporter, XP, guld, loot
       
 
-        AddPlayerXp(enemy.XPReward);
+        AddPlayerXp(enemy.XpReward);
         AddPlayerGold(enemy.GoldReward);
 
-        Console.WriteLine($"Seger! +{enemy.XPReward} XP, +{enemy.GoldReward} guld.");
+        Console.WriteLine($"Seger! +{enemy.XpReward} XP, +{enemy.GoldReward} guld.");
         MaybeDropLoot(enemy.Name);
 
         return true;
@@ -291,7 +274,7 @@ class Program
             int hp = template.HP + Rng.Next(-1, 3);
             int atk = template.Attack + Rng.Next(0, 2);
             int def = template.Defence + Rng.Next(0, 2);
-            int xp = template.XPReward + Rng.Next(0, 3);
+            int xp = template.XpReward + Rng.Next(0, 3);
             int gold = template.GoldReward + Rng.Next(0, 3);
             return new Enemy(template.Type, template.Name, hp, template.MaxHP, atk, def, xp, gold, false );
         }
