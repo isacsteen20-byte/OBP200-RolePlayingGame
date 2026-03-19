@@ -23,6 +23,8 @@ public class Player
     public int Potions { get; set; }
     
     public List<string> Inventory { get; set; }
+    
+    
 
 
 
