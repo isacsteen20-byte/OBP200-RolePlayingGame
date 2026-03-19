@@ -2,6 +2,7 @@
 
 public class Enemy
 {
+    public string Type { get; set; }
     public string Name { get; set; }
     
     public int HP  { get; set; }
@@ -16,9 +17,12 @@ public class Enemy
     
     public int GoldReward  { get; set; }
     
+    public bool IsBoss  { get; set; }
+    
    
-    public Enemy(string name, int hp, int maxHp, int atk, int def, int xpReward, int goldReward)
+    public Enemy(string type, string name, int hp, int maxHp, int atk, int def, int xpReward, int goldReward,  bool isBoss)
     { 
+            Type = type;
             Name = name; 
             HP  = hp; 
             MaxHP = maxHp;
@@ -26,5 +30,6 @@ public class Enemy
             Defence = def; 
             XPReward = xpReward; 
             GoldReward = goldReward; 
+            IsBoss = isBoss;
     } 
 }

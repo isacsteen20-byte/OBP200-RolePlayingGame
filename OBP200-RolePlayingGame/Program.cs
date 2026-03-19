@@ -4,10 +4,10 @@ namespace OBP200_RolePlayingGame;
 
 
 class Program
-{
-   static Player player;
-
-   static Enemy enemy;
+{ 
+    static Player player;
+    
+    static Enemy enemy;
    
    
    
