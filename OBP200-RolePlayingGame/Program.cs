@@ -6,7 +6,6 @@ class Program
 {
     // ======= Globalt tillstånd  =======
     static Player player;
-
     
     // Rum: [type, label]
     // types: battle, treasure, shop, rest, boss
@@ -124,7 +123,7 @@ class Program
 
             bool continueAdventure = EnterRoom(room[0]);
             
-            if (IsPlayerDead())
+            if (player.IsDead())
             {
                 Console.WriteLine("Du har stupat... Spelet över.");
                 break;
@@ -189,7 +188,7 @@ class Program
         var enemy = GenerateEnemy(isBoss);
         Console.WriteLine($"En {enemy.Name} dyker upp! (HP {enemy.HP}, ATK {enemy.Attack}, DEF {enemy.Defence})");
 
-        while (enemy.HP > 0 && !IsPlayerDead())
+        while (!enemy.IsDead() && !player.IsDead())
         {
             Console.WriteLine();
             ShowStatus();
@@ -203,20 +202,20 @@ class Program
             if (cmd == "A")
             {
                 int damage = CalculatePlayerDamage(enemy.Defence);
-                enemy.HP -= damage;
+                enemy.TakeDamage(damage);
                 Console.WriteLine($"Du slog {enemy.Name} för {damage} skada.");
             }
             else if (cmd == "X")
             {
-                int special = UseClassSpecial(enemy.Defence, enemy.IsBoss);
-                enemy.HP -= special;
+                int special = UseClassSpecial(enemy.Defence, isBoss);
+                enemy.TakeDamage(special);
                 Console.WriteLine($"Special! {enemy.Name} tar {special} skada.");
             }
             else if (cmd == "P")
             {
                 UsePotion();
             }
-            else if (cmd == "R" && !enemy.IsBoss)
+            else if (cmd == "R" && !isBoss)
             {
                 if (TryRunAway())
                 {
@@ -233,15 +232,15 @@ class Program
                 Console.WriteLine("Du tvekar...");
             }
 
-            if (enemy.HP <= 0) break;
+            if (enemy.IsDead()) break;
 
             // Fiendens tur
             int enemyDamage = CalculateEnemyDamage(enemy.Attack);
-            ApplyDamageToPlayer(enemyDamage);
+            player.TakeDamage(enemyDamage);
             Console.WriteLine($"{enemy.Name} anfaller och gör {enemyDamage} skada!");
         }
 
-        if (IsPlayerDead())
+        if (player.IsDead())
         {
             return false; // avsluta äventyr
         }
@@ -263,7 +262,7 @@ class Program
         if (isBoss)
         {
             // Boss-mall
-            return new Enemy("boss", "Urdraken", 55, 55, 9, 4, 30, 50, true );
+            return new Enemy("boss", "Urdraken", 55, 55, 9, 4, 30, 50 );
         }
         else
         {
@@ -276,17 +275,17 @@ class Program
             int def = template.Defence + Rng.Next(0, 2);
             int xp = template.XpReward + Rng.Next(0, 3);
             int gold = template.GoldReward + Rng.Next(0, 3);
-            return new Enemy(template.Type, template.Name, hp, template.MaxHP, atk, def, xp, gold, false );
+            return new Enemy(template.Type, template.Name, hp, hp, atk, def, xp, gold );
         }
     }
 
     static void InitEnemyTemplates()
     {
         EnemyTemplates.Clear();
-        EnemyTemplates.Add(new Enemy("beast", "Vildsvin", 18, 18,4, 1, 6, 4, false));
-        EnemyTemplates.Add(new Enemy ("undead", "Skelett", 20, 20, 5, 2, 7, 5, false));
-        EnemyTemplates.Add(new Enemy ("bandit", "Bandit", 16, 16, 6, 1, 8, 6, false ));
-        EnemyTemplates.Add(new Enemy ("slime", "Geléslem", 14, 14, 3, 0, 5, 3, false ));
+        EnemyTemplates.Add(new Enemy("beast", "Vildsvin", 18, 18,4, 1, 6, 4));
+        EnemyTemplates.Add(new Enemy ("undead", "Skelett", 20, 20, 5, 2, 7, 5));
+        EnemyTemplates.Add(new Enemy ("bandit", "Bandit", 16, 16, 6, 1, 8, 6 ));
+        EnemyTemplates.Add(new Enemy ("slime", "Geléslem", 14, 14, 3, 0, 5, 3 ));
     }
 
     static int CalculatePlayerDamage(int enemyDef)
@@ -329,7 +328,7 @@ class Program
             Console.WriteLine("Warrior använder Heavy Strike!");
             int atk = player.Attack;
             specialDmg = Math.Max(2, atk + 3 - enemyDef);
-            ApplyDamageToPlayer(2); // självskada
+           player.TakeDamage(2); // självskada
         }
         else if (cls == "Mage")
         {
@@ -389,13 +388,7 @@ class Program
 
         return dmg;
     }
-
-    static void ApplyDamageToPlayer(int dmg)
-    {
-        int hp = player.HP;
-        hp -= Math.Max(0, dmg);
-        player.HP = Math.Max(0, hp);
-    }
+    
 
     static void UsePotion()
     {
@@ -427,10 +420,7 @@ class Program
         return Rng.NextDouble() < chance;
     }
 
-    static bool IsPlayerDead()
-    {
-        return player.HP <= 0;
-    }
+    
 
     static void AddPlayerXp(int amount)
     {
@@ -583,7 +573,7 @@ class Program
     static void SellMinorGems()
     {
        
-        if (player.Inventory == null || player.Inventory.Count == 0)
+        if (player.Inventory.Count == 0)
         {
             Console.WriteLine("Du har inga föremål att sälja.");
             return;
@@ -617,7 +607,7 @@ class Program
     {
         Console.WriteLine($"[{player.Name} | {player.PlayerClass}]  HP {player.HP}/{player.MaxHP}  ATK {player.Attack}  DEF {player.Defence}  LVL {player.Level}  XP {player.XP}  Guld {player.Gold}  Drycker {player.Potions}");
        
-        if (player.Inventory != null && player.Inventory.Count > 0)
+        if (player.Inventory.Count > 0)
         {
             Console.WriteLine($"Väska: {string.Join("; ", player.Inventory)}");
         }
