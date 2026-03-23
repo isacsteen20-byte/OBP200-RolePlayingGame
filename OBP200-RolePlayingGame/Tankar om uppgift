@@ -4,3 +4,7 @@
 12 Mars. Lagt till player klass, försökt göra om array till att plocka saker från klassen. Försökt initiera en spelare genom klassen. Förstår inte varför mina brancher ser likadanda ut?
 
 17 Mars. Flyttat alla spelarens egenskaper från array till min player klass. Tror allting fungerar och ska börja ändra variabler. 
+
+22 Mars. Tog bort onödig kod och bytte all logik som gick till att fungera med klasserna
+
+23 Mars. Mergeade test-branchen in i Master
