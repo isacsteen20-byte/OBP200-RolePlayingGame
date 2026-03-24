@@ -5,6 +5,8 @@ namespace OBP200_RolePlayingGame;
 class Program
 {
     // ======= Globalt tillstånd  =======
+    
+    // Initiera player från ny klass
     static Player player;
     
     // Rum: [type, label]
@@ -12,8 +14,8 @@ class Program
     static List<string[]> Rooms = new List<string[]>();
 
     // Fiendemallar: [type, name, HP, ATK, DEF, XPReward, GoldReward]
-    static List<Enemy> EnemyTemplates = new List<Enemy>();
-
+    private static List<Enemy> EnemyTemplates;
+    
     // Status för kartan
     static int CurrentRoomIndex = 0;
 
@@ -25,7 +27,9 @@ class Program
     static void Main(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
-        InitEnemyTemplates();
+        
+        // Hämta enemies från ny klass
+        EnemyTemplates = Enemy.GetEnemyTemplates();
 
         while (true)
         {
@@ -269,7 +273,7 @@ class Program
             // Slumpa bland templates
             var template = EnemyTemplates[Rng.Next(EnemyTemplates.Count)];
             
-            // Slmumpmässig justering av stats
+            // Slumpmässig justering av stats
             int hp = template.HP + Rng.Next(-1, 3);
             int atk = template.Attack + Rng.Next(0, 2);
             int def = template.Defence + Rng.Next(0, 2);
@@ -279,14 +283,7 @@ class Program
         }
     }
 
-    static void InitEnemyTemplates()
-    {
-        EnemyTemplates.Clear();
-        EnemyTemplates.Add(new Enemy("beast", "Vildsvin", 18, 18,4, 1, 6, 4));
-        EnemyTemplates.Add(new Enemy ("undead", "Skelett", 20, 20, 5, 2, 7, 5));
-        EnemyTemplates.Add(new Enemy ("bandit", "Bandit", 16, 16, 6, 1, 8, 6 ));
-        EnemyTemplates.Add(new Enemy ("slime", "Geléslem", 14, 14, 3, 0, 5, 3 ));
-    }
+    
 
     static int CalculatePlayerDamage(int enemyDef)
     {

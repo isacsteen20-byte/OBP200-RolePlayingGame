@@ -8,3 +8,5 @@
 22 Mars. Tog bort onödig kod och bytte all logik som gick till att fungera med klasserna
 
 23 Mars. Mergeade test-branchen in i Master
+
+24 Mars. Flyttade enemy-template till klassen
