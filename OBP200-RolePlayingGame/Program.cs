@@ -5,16 +5,16 @@ namespace OBP200_RolePlayingGame;
 class Program
 {
     // ======= Globalt tillstånd  =======
-    
-    // Initiera player från ny klass
+   
+    // Fiendemall
+    private static List<Enemy> EnemyTemplates;
+
+    // Ny player från klass
     static Player player;
     
     // Rum: [type, label]
     // types: battle, treasure, shop, rest, boss
     static List<string[]> Rooms = new List<string[]>();
-
-    // Fiendemallar: [type, name, HP, ATK, DEF, XPReward, GoldReward]
-    private static List<Enemy> EnemyTemplates;
     
     // Status för kartan
     static int CurrentRoomIndex = 0;
@@ -609,19 +609,4 @@ class Program
             Console.WriteLine($"Väska: {string.Join("; ", player.Inventory)}");
         }
     }
-    
-    // ======= Hjälpmetoder =======
-
-    static int ParseInt(string s, int fallback)
-    {
-        try
-        {
-            int value = Convert.ToInt32(s);
-            return value;
-        }
-        catch (Exception e)
-        {
-            return fallback;
-        }
-    }
-}
+ }
