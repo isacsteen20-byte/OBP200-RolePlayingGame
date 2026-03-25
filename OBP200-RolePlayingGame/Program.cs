@@ -7,7 +7,7 @@ class Program
     // ======= Globalt tillstånd  =======
    
     // Fiendemall
-    private static List<Enemy> EnemyTemplates;
+    static List<Enemy> EnemyTemplates;
 
     // Ny player från klass
     static Player player;
