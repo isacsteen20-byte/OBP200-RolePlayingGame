@@ -7,6 +7,8 @@ public abstract class Character
     public int MaxHP { get; set; }
     public int Attack { get; set; }
     public int Defence { get; set; }
+    public virtual int XpReward { get; set; }
+    public virtual int GoldReward { get; set; }
 
     public bool IsDead()
     {

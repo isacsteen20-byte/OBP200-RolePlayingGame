@@ -189,7 +189,8 @@ class Program
 
     static bool DoBattle(bool isBoss)
     {
-        var enemy = GenerateEnemy(isBoss);
+        //Enemy hanteras som en Character
+        Character enemy = GenerateEnemy(isBoss);
         Console.WriteLine($"En {enemy.Name} dyker upp! (HP {enemy.HP}, ATK {enemy.Attack}, DEF {enemy.Defence})");
 
         while (!enemy.IsDead() && !player.IsDead())
@@ -206,13 +207,13 @@ class Program
             if (cmd == "A")
             {
                 int damage = CalculatePlayerDamage(enemy.Defence);
-                enemy.TakeDamage(damage);
+                DealDamage(enemy, damage);
                 Console.WriteLine($"Du slog {enemy.Name} för {damage} skada.");
             }
             else if (cmd == "X")
             {
                 int special = UseClassSpecial(enemy.Defence, isBoss);
-                enemy.TakeDamage(special);
+                DealDamage(enemy, special);
                 Console.WriteLine($"Special! {enemy.Name} tar {special} skada.");
             }
             else if (cmd == "P")
@@ -240,7 +241,7 @@ class Program
 
             // Fiendens tur
             int enemyDamage = CalculateEnemyDamage(enemy.Attack);
-            player.TakeDamage(enemyDamage);
+            DealDamage(player, enemyDamage);
             Console.WriteLine($"{enemy.Name} anfaller och gör {enemyDamage} skada!");
         }
 
@@ -386,6 +387,11 @@ class Program
         return dmg;
     }
     
+    //Metod för Dealdamage som använder Metoden takedamage, ifrån CharacterKlass
+    static void DealDamage(Character target, int damage)
+    {
+        target.TakeDamage(damage);
+    }
 
     static void UsePotion()
     {
