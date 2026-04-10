@@ -251,12 +251,13 @@ class Program
         }
 
         // Vinstrapporter, XP, guld, loot
+        Enemy e = (Enemy)enemy;
       
 
-        AddPlayerXp(enemy.XpReward);
-        AddPlayerGold(enemy.GoldReward);
+        AddPlayerXp(e.XpReward);
+        AddPlayerGold(e.GoldReward);
 
-        Console.WriteLine($"Seger! +{enemy.XpReward} XP, +{enemy.GoldReward} guld.");
+        Console.WriteLine($"Seger! +{e.XpReward} XP, +{e.GoldReward} guld.");
         MaybeDropLoot(enemy.Name);
 
         return true;
@@ -393,24 +394,22 @@ class Program
         target.TakeDamage(damage);
     }
 
+   
     static void UsePotion()
     {
-        int pot = player.Potions;
-        if (pot <= 0)
+        if (player.Potions <= 0)
         {
             Console.WriteLine("Du har inga drycker kvar.");
             return;
         }
-        int hp = player.HP;
-        int maxhp = player.MaxHP;
+        int before = player.HP;
 
         // Helning av spelaren
-        int heal = 12;
-        int newHp = Math.Min(maxhp, hp + heal);
-        player.HP = newHp;
+        player.Heal(12);
+        int healed = player.HP - before;
         player.Potions -= 1;
-
-        Console.WriteLine($"Du dricker en dryck och återfår {newHp - hp} HP.");
+        
+        Console.WriteLine($"Du dricker en dryck och återfår {healed} HP.");
     }
 
     static bool TryRunAway()
@@ -451,30 +450,28 @@ class Program
 
             // Uppgradering baserad på karaktärsklass
             string cls =player.PlayerClass;
-            int maxhp = player.MaxHP;
             int atk = player.Attack;
             int def = player.Defence;
 
             switch (cls)
             {
                 case "Warrior":
-                    maxhp += 6; atk += 2; def += 2;
+                    player.IncreaseMaxHP(6); atk += 2; def += 2;
                     break;
                 case "Mage":
-                    maxhp += 4; atk += 4; def += 1;
+                    player.IncreaseMaxHP(4); atk += 4; def += 1;
                     break;
                 case "Rogue":
-                    maxhp += 5; atk += 3; def += 1;
+                    player.IncreaseMaxHP(5); atk += 3; def += 1;
                     break;
                 default:
-                    maxhp += 4; atk += 3; def += 1;
+                    player.IncreaseMaxHP(4); atk += 3; def += 1;
                     break;
             }
-
-            player.MaxHP = maxhp;
+            
             player.Attack = atk;
             player.Defence = def;
-            player.HP = player.MaxHP; // full heal vid level up
+            player.HealToMax(); // full heal vid level up
 
             Console.WriteLine($"Du når nivå {lvl + 1}! Värden ökade och HP återställd.");
         }
@@ -598,8 +595,7 @@ class Program
     static bool DoRest()
     {
         Console.WriteLine("Du slår läger och vilar.");
-        int maxhp = player.MaxHP;
-        player.HP = maxhp;
+        player.HealToMax();
         Console.WriteLine("HP återställt till max.");
         return true;
     }
