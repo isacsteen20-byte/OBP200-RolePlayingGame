@@ -251,13 +251,12 @@ class Program
         }
 
         // Vinstrapporter, XP, guld, loot
-        Enemy e = (Enemy)enemy;
-      
+        player.AddXP(enemy.GetXpReward());
+        player.AddGold(enemy.GetGoldReward());
+        
+        MaybeLevelUp();
 
-        AddPlayerXp(e.XpReward);
-        AddPlayerGold(e.GoldReward);
-
-        Console.WriteLine($"Seger! +{e.XpReward} XP, +{e.GoldReward} guld.");
+        Console.WriteLine($"Seger! +{enemy.GetXpReward()} XP, +{enemy.GetGoldReward()} guld.");
         MaybeDropLoot(enemy.Name);
 
         return true;
@@ -336,7 +335,7 @@ class Program
             if (gold >= 3)
             {
                 Console.WriteLine("Mage kastar Fireball!");
-                player.Gold -= 3;
+                player.SpendGold(3);
                 int atk = player.Attack;
                 specialDmg = Math.Max(3, atk + 5 - (enemyDef / 2));
             }
@@ -397,18 +396,16 @@ class Program
    
     static void UsePotion()
     {
-        if (player.Potions <= 0)
+        int before = player.HP;
+
+        if (!player.UsePotion())
         {
             Console.WriteLine("Du har inga drycker kvar.");
             return;
         }
-        int before = player.HP;
 
         // Helning av spelaren
-        player.Heal(12);
         int healed = player.HP - before;
-        player.Potions -= 1;
-        
         Console.WriteLine($"Du dricker en dryck och återfår {healed} HP.");
     }
 
@@ -424,18 +421,8 @@ class Program
 
     
 
-    static void AddPlayerXp(int amount)
-    {
-        int xp = player.XP + Math.Max(0, amount);
-        player.XP = xp;
-        MaybeLevelUp();
-    }
+ 
 
-    static void AddPlayerGold(int amount)
-    {
-        int gold = player.Gold + Math.Max(0, amount);
-       player.Gold = gold;
-    }
 
     static void MaybeLevelUp()
     {
@@ -446,31 +433,36 @@ class Program
 
         if (xp >= nextThreshold)
         {
-            player.Level += 1;
+            player.LevelUp(1);
 
             // Uppgradering baserad på karaktärsklass
             string cls =player.PlayerClass;
-            int atk = player.Attack;
-            int def = player.Defence;
 
             switch (cls)
             {
                 case "Warrior":
-                    player.IncreaseMaxHP(6); atk += 2; def += 2;
+                    player.IncreaseMaxHP(6); 
+                    player.IncreaseAttack(2); 
+                    player.IncreaseDefence(2);
                     break;
                 case "Mage":
-                    player.IncreaseMaxHP(4); atk += 4; def += 1;
+                    player.IncreaseMaxHP(4); 
+                    player.IncreaseAttack(4); 
+                    player.IncreaseDefence(1);
                     break;
                 case "Rogue":
-                    player.IncreaseMaxHP(5); atk += 3; def += 1;
+                    player.IncreaseMaxHP(5); 
+                    player.IncreaseAttack(3); 
+                    player.IncreaseDefence(1);
                     break;
                 default:
-                    player.IncreaseMaxHP(4); atk += 3; def += 1;
+                    player.IncreaseMaxHP(4); 
+                    player.IncreaseAttack(3); 
+                    player.IncreaseDefence(1);
                     break;
             }
             
-            player.Attack = atk;
-            player.Defence = def;
+        
             player.HealToMax(); // full heal vid level up
 
             Console.WriteLine($"Du når nivå {lvl + 1}! Värden ökade och HP återställd.");
@@ -500,7 +492,7 @@ class Program
         if (Rng.NextDouble() < 0.5)
         {
             int gold = Rng.Next(8, 15);
-            AddPlayerGold(gold);
+            player.AddGold(gold);
             Console.WriteLine($"Kistan innehåller {gold} guld!");
         }
         else
@@ -529,14 +521,14 @@ class Program
 
             if (val == "1")
             {
-                TryBuy(10, () => player.Potions += 1, "Du köper en dryck.");            }
+                TryBuy(10, () => player.AddPotion(1), "Du köper en dryck.");            }
             else if (val == "2")
             {
-                TryBuy(25, () => player.Attack += 2, "Du köper ett bättre vapen.");
+                TryBuy(25, () => player.IncreaseAttack(2), "Du köper ett bättre vapen.");
             }
             else if (val == "3")
             {
-                TryBuy(25, () => player.Defence += 2, "Du köper bättre rustning.");
+                TryBuy(25, () => player.IncreaseDefence(2), "Du köper bättre rustning.");
             }
             else if (val == "4")
             {
@@ -560,7 +552,7 @@ class Program
         int gold = player.Gold;
         if (gold >= cost)
         {
-            player.Gold = gold - cost;
+            player.SpendGold(gold - cost);
             apply();
             Console.WriteLine(successMsg);
         }
@@ -588,7 +580,7 @@ class Program
 
         player.Inventory = player.Inventory.Where(x => x != "Minor Gem").ToList();
 
-        AddPlayerGold(count * 5);
+        player.AddGold(count * 5);
         Console.WriteLine($"Du säljer {count} st Minor Gem för {count * 5} guld.");
     }
 

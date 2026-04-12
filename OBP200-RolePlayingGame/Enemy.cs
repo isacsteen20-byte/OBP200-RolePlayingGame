@@ -2,9 +2,9 @@
 
 public class Enemy : Character
 {
-    public string Type { get; set; }
-    public int XpReward  { get; set; }
-    public int GoldReward  { get; set; }
+    public string Type { get; private set; }
+    public int XpReward  { get; }
+    public int GoldReward  { get; }
     
    
     public Enemy(string type, string name, int hp, int maxHp, int atk, int def, int xpReward, int goldReward) 
@@ -13,7 +13,18 @@ public class Enemy : Character
             Type = type;
             XpReward = xpReward; 
             GoldReward = goldReward; 
+    }
+
+    public override int GetXpReward()
+    {
+        return XpReward;
+    }
+
+    public override int GetGoldReward()
+    {
+        return GoldReward;
     } 
+
     public static List<Enemy> GetEnemyTemplates()
     {
         return new List<Enemy>

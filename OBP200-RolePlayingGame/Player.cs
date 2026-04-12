@@ -2,11 +2,11 @@
 
 public class Player : Character
 {
-    public string PlayerClass { get; set; }
-    public int Gold { get; set; }
-    public int XP { get; set; }
-    public int Level { get; set; }
-    public int Potions { get; set; }
+    public string PlayerClass { get; }
+    public int Gold { get; private set; }
+    public int XP { get; private set; }
+    public int Level { get; private set; }
+    public int Potions { get; private set; }
     public List<string> Inventory { get; set; }
 
     
@@ -22,6 +22,40 @@ public class Player : Character
         
         Inventory = new List<string>{"Wooden Sword", "Cloth Armor"};
     }
-   
+    public void AddGold(int amount)
+    {
+        Gold += Math.Max(0, amount);
+    }
+
+    public void SpendGold(int amount)
+    {
+        if (amount <= Gold)
+            Gold -= amount;
+    }
+
+    public void AddXP(int amount)
+    {
+        XP += Math.Max(0, amount);
+    }
+
+    public void LevelUp(int amount)
+    {
+        Level += amount;
+    }
+
+    public bool UsePotion()
+    {
+        if (Potions <= 0)
+            return false;
+            
+        Potions--;
+        Heal(12);
+        return true;
+    }
+
+    public void AddPotion(int amount)
+    {
+        Potions += amount;
+    }
 
 }
