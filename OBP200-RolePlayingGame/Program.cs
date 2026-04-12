@@ -418,12 +418,7 @@ class Program
         if (cls == "Mage") chance = 0.35;
         return Rng.NextDouble() < chance;
     }
-
     
-
- 
-
-
     static void MaybeLevelUp()
     {
         // Nivåtrösklar
@@ -433,7 +428,7 @@ class Program
 
         if (xp >= nextThreshold)
         {
-            player.LevelUp(1);
+            player.LevelUp();
 
             // Uppgradering baserad på karaktärsklass
             string cls =player.PlayerClass;
@@ -465,7 +460,7 @@ class Program
         
             player.HealToMax(); // full heal vid level up
 
-            Console.WriteLine($"Du når nivå {lvl + 1}! Värden ökade och HP återställd.");
+            Console.WriteLine($"Du når nivå {player.Level}! Värden ökade och HP återställd.");
         }
     }
 
@@ -552,7 +547,7 @@ class Program
         int gold = player.Gold;
         if (gold >= cost)
         {
-            player.SpendGold(gold - cost);
+            player.SpendGold(cost);
             apply();
             Console.WriteLine(successMsg);
         }
@@ -578,7 +573,7 @@ class Program
             return;
         }
 
-        player.Inventory = player.Inventory.Where(x => x != "Minor Gem").ToList();
+        player.Inventory.RemoveAll(x => x == "Minor Gem"); 
 
         player.AddGold(count * 5);
         Console.WriteLine($"Du säljer {count} st Minor Gem för {count * 5} guld.");

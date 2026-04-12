@@ -7,7 +7,7 @@ public class Player : Character
     public int XP { get; private set; }
     public int Level { get; private set; }
     public int Potions { get; private set; }
-    public List<string> Inventory { get; set; }
+    public List<string> Inventory { get; }
 
     
    
@@ -38,9 +38,9 @@ public class Player : Character
         XP += Math.Max(0, amount);
     }
 
-    public void LevelUp(int amount)
+    public void LevelUp()
     {
-        Level += amount;
+        Level++;
     }
 
     public bool UsePotion()
